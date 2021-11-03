@@ -51,12 +51,12 @@ public class EmployeeServices {
                                      @FormParam("emp_no") String emp_no,
                                      @FormParam("hire_date") String hire_date, 
                                      @FormParam("job") String job,
-                                     @FormParam("salary") double salary,
-                                     @FormParam("dept_id") int dept_id,
-                                     @FormParam("mng_id") int mng_id
+                                     @FormParam("salary") String salary,
+                                     @FormParam("dept_id") String dept_id,
+                                     @FormParam("mng_id") String mng_id
                                     ) {
         java.sql.Date conv_date = java.sql.Date.valueOf(hire_date);
-        Employee empObject = new Employee(emp_name, emp_no, conv_date, job, salary, dept_id, mng_id);
+        Employee empObject = new Employee(emp_name, emp_no, conv_date, job, Double.parseDouble(salary), Integer.parseInt(dept_id), Integer.parseInt(mng_id));
         employeeModel.insertEmployee(empObject);
         return Response.ok("Employee created: " + empObject.toString()).build();
     }
