@@ -1,7 +1,7 @@
 package edu.rit.croatia.companydataserver.servicelayer;
 
 import companydata.Department;
-import edu.rit.croatia.companydataserver.businesslayer.Company;
+import edu.rit.croatia.companydataserver.businesslayer.DepartmentModel;
 import javax.ws.rs.core.*;
 
 import com.google.gson.Gson;
@@ -14,9 +14,9 @@ import javax.ws.rs.*;
  * @author Kristina
  */
 @Path("CompanyServices")
-public class CompanyServices {
+public class DepartmentServices {
 
-    private Company company = null;
+    private DepartmentModel departmentModel = null;
     private Gson gson = null;
 
     @Context
@@ -25,23 +25,23 @@ public class CompanyServices {
     /**
      * Creates a new instance of CompanyServices
      */
-    public CompanyServices() {
+    public DepartmentServices() {
         gson = new Gson();
-        company = new Company();
+        departmentModel = new DepartmentModel();
     }
 
     @GET
     @Path("departments")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getDepartments(@QueryParam("company") String companyName) {
-        return Response.ok(company.getDepartments(companyName)).build();
+        return Response.ok(departmentModel.getDepartments(companyName)).build();
     }
 
     @GET
     @Path("department")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getDepartment(@QueryParam("company") String companyName, @QueryParam("id") String id) {
-        return Response.ok(company.getDepartment(companyName, id)).build();
+        return Response.ok(departmentModel.getDepartment(companyName, id)).build();
     }
 
     @POST
@@ -56,7 +56,7 @@ public class CompanyServices {
                                          
         Department deptObject = new Department(c, dept_name, dept_no, location);
         // String inJson = Response.ok(deptObject.toString());
-        company.insertDepartment(deptObject);
+        departmentModel.insertDepartment(deptObject);
         return Response.ok("Department created: " + deptObject.toString()).build();
     }
 
@@ -66,7 +66,7 @@ public class CompanyServices {
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateDepartment(String inJson) {
         // Department dept = gson.fromJson(inJson, Department.class);
-        company.updateDepartment(inJson);
+        departmentModel.updateDepartment(inJson);
         return Response.ok("Department Updated: " + inJson).build();
     }
 
@@ -76,7 +76,7 @@ public class CompanyServices {
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteDepartment(@QueryParam("dept_id") int id, @QueryParam("company") String companyName) {
         // return Response.ok("id is: " + id.getClass()).build();
-        company.deleteDepartment(companyName, id);
+        departmentModel.deleteDepartment(companyName, id);
         // if delete DB record successful send ok, otherwise Repsonse.Status.NO_CONTENT
         // with no msg
         return Response.ok("Department Deleted").build();
