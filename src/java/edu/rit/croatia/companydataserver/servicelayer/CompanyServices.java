@@ -5,6 +5,7 @@ import edu.rit.croatia.companydataserver.businesslayer.Company;
 import javax.ws.rs.core.*;
 
 import com.google.gson.Gson;
+import edu.rit.croatia.companydataserver.utils.ErrorResponse;
 
 import javax.ws.rs.*;
 
@@ -76,7 +77,12 @@ public class CompanyServices {
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteDepartment(@QueryParam("dept_id") int id, @QueryParam("company") String companyName) {
         // return Response.ok("id is: " + id.getClass()).build();
-        company.deleteDepartment(companyName, id);
+        if(! Boolean.parseBoolean(company.deleteDepartment(companyName, id))) {
+            return (new ErrorResponse(79))
+                    .message("No department found by that id.")
+                    .code(422)
+                    .send();
+        }
         // if delete DB record successful send ok, otherwise Repsonse.Status.NO_CONTENT
         // with no msg
         return Response.ok("Department Deleted").build();
