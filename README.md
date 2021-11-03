@@ -6,7 +6,7 @@ RIT Project
 
 Add companydata.jar, and mysql-connector-java-8.0.27.jar files to your project. You will need 
 to add: import companydata.*; to the top of your class that wants to access the Data 
-Layer.
+Layer. 
 
 To use it (see included TestDataLayer.java example):
 
