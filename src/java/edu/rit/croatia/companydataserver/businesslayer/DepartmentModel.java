@@ -68,9 +68,14 @@ public class DepartmentModel {
 /*
     Deletes a specific department
 */
-  public int deleteDepartment(String comp, int dept_id){
-      return dl.deleteDepartment(comp, dept_id);
-   }
+  public String deleteDepartment(String comp, int dept_id){
+        int res = dl.deleteDepartment(comp, dept_id);
+        if (res==1)
+          return "{\"success:\": \"Department " + dept_id + " from " + comp +" deleted.\"}";
+        else  
+          return "{\"error:\": \"Error: can't delete " + dept_id + " from " + comp + ".\"}";
+
+     }
     // @Override
     // public String toString() {
     //     // area = Math.PI * this.radius * this.radius;

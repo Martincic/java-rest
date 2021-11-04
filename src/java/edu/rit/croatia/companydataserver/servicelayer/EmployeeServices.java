@@ -39,7 +39,7 @@ public class EmployeeServices {
     @GET
     @Path("employee")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getEmployee(@QueryParam("id") String id) {
+    public Response getEmployee(@QueryParam("emp_id") String id) {
         return Response.ok(employeeModel.getEmployee(id)).build();
     }
 
@@ -76,9 +76,9 @@ public class EmployeeServices {
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteEmployee(@QueryParam("emp_id") int id) {
         // return Response.ok("id is: " + id.getClass()).build();
-        employeeModel.deleteEmployee(id);
+        
         // if delete DB record successful send ok, otherwise Repsonse.Status.NO_CONTENT
         // with no msg
-        return Response.ok("Employee " + id + " deleted").build();
+        return Response.ok(employeeModel.deleteEmployee(id)).build();
     }
 }

@@ -76,9 +76,8 @@ public class DepartmentServices {
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteDepartment(@QueryParam("dept_id") int id, @QueryParam("company") String companyName) {
         // return Response.ok("id is: " + id.getClass()).build();
-        departmentModel.deleteDepartment(companyName, id);
         // if delete DB record successful send ok, otherwise Repsonse.Status.NO_CONTENT
         // with no msg
-        return Response.ok("Department Deleted").build();
+        return Response.ok(departmentModel.deleteDepartment(companyName, id)).build();
     }
 }
