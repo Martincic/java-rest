@@ -66,7 +66,7 @@ public class DepartmentModel {
    }
 
 /*
-    Updates a specific department
+    Deletes a specific department
 */
   public int deleteDepartment(String comp, int dept_id){
       return dl.deleteDepartment(comp, dept_id);

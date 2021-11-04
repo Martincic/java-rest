@@ -66,7 +66,7 @@ public class TimecardModel {
        }
 
     /*
-        Updates a specific timecard
+        Deletes a specific timecard
     */
       public int deleteTimecard(int timecard_id){
           return dl.deleteTimecard(timecard_id);

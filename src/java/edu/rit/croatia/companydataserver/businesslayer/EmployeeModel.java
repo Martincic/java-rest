@@ -66,7 +66,7 @@ public class EmployeeModel {
        }
 
     /*
-        Updates a specific employee
+        Deletes a specific employee
     */
       public int deleteEmployee(int empId){
           return dl.deleteEmployee(empId);
