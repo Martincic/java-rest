@@ -25,6 +25,7 @@ public class ApplicationConfig extends Application {
     private void addRestResourceClasses(Set<Class<?>> resources) {
         resources.add(edu.rit.croatia.companydataserver.servicelayer.DepartmentServices.class);
         resources.add(edu.rit.croatia.companydataserver.servicelayer.EmployeeServices.class);
+        resources.add(edu.rit.croatia.companydataserver.servicelayer.TimecardServices.class);
     }
 
 }

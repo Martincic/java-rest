@@ -4,7 +4,6 @@ import companydata.Department;
 import edu.rit.croatia.companydataserver.businesslayer.DepartmentModel;
 import javax.ws.rs.core.*;
 
-import com.google.gson.Gson;
 
 import javax.ws.rs.*;
 
@@ -17,7 +16,6 @@ import javax.ws.rs.*;
 public class DepartmentServices {
 
     private DepartmentModel departmentModel = null;
-    private Gson gson = null;
 
     @Context
     private UriInfo context;
@@ -26,7 +24,6 @@ public class DepartmentServices {
      * Creates a new instance of CompanyServices
      */
     public DepartmentServices() {
-        gson = new Gson();
         departmentModel = new DepartmentModel();
     }
 
