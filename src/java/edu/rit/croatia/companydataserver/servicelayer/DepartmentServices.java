@@ -4,7 +4,6 @@ import companydata.Department;
 import edu.rit.croatia.companydataserver.businesslayer.DepartmentModel;
 import javax.ws.rs.core.*;
 
-import com.google.gson.Gson;
 
 import javax.ws.rs.*;
 
@@ -17,7 +16,6 @@ import javax.ws.rs.*;
 public class DepartmentServices {
 
     private DepartmentModel departmentModel = null;
-    private Gson gson = null;
 
     @Context
     private UriInfo context;
@@ -26,7 +24,6 @@ public class DepartmentServices {
      * Creates a new instance of CompanyServices
      */
     public DepartmentServices() {
-        gson = new Gson();
         departmentModel = new DepartmentModel();
     }
 
@@ -76,9 +73,8 @@ public class DepartmentServices {
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteDepartment(@QueryParam("dept_id") int id, @QueryParam("company") String companyName) {
         // return Response.ok("id is: " + id.getClass()).build();
-        departmentModel.deleteDepartment(companyName, id);
         // if delete DB record successful send ok, otherwise Repsonse.Status.NO_CONTENT
         // with no msg
-        return Response.ok("Department Deleted").build();
+        return Response.ok(departmentModel.deleteDepartment(companyName, id)).build();
     }
 }

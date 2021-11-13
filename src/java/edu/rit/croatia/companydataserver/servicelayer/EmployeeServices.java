@@ -4,7 +4,6 @@ import companydata.Employee;
 import edu.rit.croatia.companydataserver.businesslayer.EmployeeModel;
 import javax.ws.rs.core.*;
 
-import com.google.gson.Gson;
 import javax.ws.rs.*;
 
 /**
@@ -16,7 +15,6 @@ import javax.ws.rs.*;
 public class EmployeeServices {
 
     private EmployeeModel employeeModel = null;
-    private Gson gson = null;
 
     @Context
     private UriInfo context;
@@ -25,7 +23,6 @@ public class EmployeeServices {
      * Creates a new instance of CompanyServices
      */
     public EmployeeServices() {
-        gson = new Gson();
         employeeModel = new EmployeeModel();
     }
 
@@ -39,7 +36,7 @@ public class EmployeeServices {
     @GET
     @Path("employee")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getEmployee(@QueryParam("id") String id) {
+    public Response getEmployee(@QueryParam("emp_id") String id) {
         return Response.ok(employeeModel.getEmployee(id)).build();
     }
 
@@ -56,6 +53,7 @@ public class EmployeeServices {
                                      @FormParam("mng_id") String mng_id
                                     ) {
         java.sql.Date conv_date = java.sql.Date.valueOf(hire_date);
+        System.out.println(hire_date);
         Employee empObject = new Employee(emp_name, emp_no, conv_date, job, Double.parseDouble(salary), Integer.parseInt(dept_id), Integer.parseInt(mng_id));
         employeeModel.insertEmployee(empObject);
         return Response.ok("Employee created: " + empObject.toString()).build();
@@ -76,9 +74,9 @@ public class EmployeeServices {
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteEmployee(@QueryParam("emp_id") int id) {
         // return Response.ok("id is: " + id.getClass()).build();
-        employeeModel.deleteEmployee(id);
+        
         // if delete DB record successful send ok, otherwise Repsonse.Status.NO_CONTENT
         // with no msg
-        return Response.ok("Employee " + id + " deleted").build();
+        return Response.ok(employeeModel.deleteEmployee(id)).build();
     }
 }

@@ -2,6 +2,9 @@ package edu.rit.croatia.companydataserver.businesslayer;
 
 import com.google.gson.Gson;
 import companydata.*;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import companydata.Timecard;
 import java.util.List;
 
 /**
@@ -37,7 +40,7 @@ public class TimecardModel {
     /*
         Gets a specific timecard
     */
-    public String getEmployee(int timecard_id) {
+    public String getTimecard(int timecard_id) {
         Timecard timecard = dl.getTimecard(timecard_id);
         if (timecard == null) {
             return "{\"error:\": \"No timecard found for timecardID: " + timecard_id + ".\"}";
@@ -48,11 +51,23 @@ public class TimecardModel {
     /*
         Create/Insert a specific timecard
     */
-    public Timecard insertTimecard(Timecard timecard) {
-        if(dl.insertTimecard(timecard) == null){
-            return null;
-        } else {
-            return timecard;
+    public String insertTimecard(String start_time, String end_time, int empId) {
+        try{
+            Timestamp startTime = new Timestamp(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(start_time).getTime());
+            Timestamp endTime = new Timestamp(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(end_time).getTime());  
+
+            Timecard timecard = new Timecard(startTime, endTime, empId);
+            if(dl.insertTimecard(timecard) == null){
+                return "{\"error:\": \"Can't add new timecard for employee id: " + empId + ", start time: " + startTime + ", end time: " + endTime + ".\"}";
+            } else {
+                return "{\"success:\":{ "
+                        + "\"timecard_id \":" + timecard.getId()
+                        + ",\"start_time\": \"" + start_time
+                        + "\", \"end_time\": \"" + end_time
+                        + "\", \"emp_id\":" + empId + " } }";
+            }
+        }catch(java.text.ParseException pe){
+            return "{\"error:\": \"please write time in format yyyy-MM-dd HH:mm:ss.\"}";
         }
     }
 
@@ -68,9 +83,13 @@ public class TimecardModel {
     /*
         Deletes a specific timecard
     */
-      public int deleteTimecard(int timecard_id){
-          return dl.deleteTimecard(timecard_id);
-       }
+      public String deleteTimecard(int timecardId){
+          int res = dl.deleteTimecard(timecardId);
+          if (res==1)
+            return "{\"success:\": \"Timecard " + timecardId + " deleted.\"}";
+          else  
+            return "{\"error:\": \"can't delete timecard " + timecardId + ".\"}";
+      }
 
 
 }

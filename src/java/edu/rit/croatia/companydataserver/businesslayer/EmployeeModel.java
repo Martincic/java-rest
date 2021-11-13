@@ -68,8 +68,13 @@ public class EmployeeModel {
     /*
         Deletes a specific employee
     */
-      public int deleteEmployee(int empId){
-          return dl.deleteEmployee(empId);
+      public String deleteEmployee(int empId){
+          int res = dl.deleteEmployee(empId);
+          if (res==1)
+            return "{\"success:\": \"Employee " + empId + " deleted.\"}";
+          else  
+            return "{\"error:\": \"Error: can't delete " + empId + ".\"}";
+
        }
 
 
