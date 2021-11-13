@@ -55,12 +55,7 @@ public class DepartmentModel {
         if(dept == null){
                 return "{\"error:\": \"Can't add new department, department name: " + dept_name + ", department number: " + dept_no + ", location: " + location + ".\"}";
             } else {
-                return "{ "
-                        + "\"company\": " + "\"" + c + "\""
-                        + ", \"dept_id\":" + dept.getId()
-                        + ", \"dept_name\":" + "\"" + dept_name + "\"" 
-                        + ", \"dept_no\":" + "\"" + dept_no + "\"" 
-                        + ", \"location\":" + "\"" + location + "\""  + " }";
+                return gson.toJson(dept);
             }
     }
 
@@ -73,12 +68,7 @@ public class DepartmentModel {
                 //TODO: error msgs
                 return "{\"error:\": \"Can't update department.\"}";
             } else {
-                return "{ "
-                        + "\"company\": " + "\"" + dept.getCompany() + "\""
-                        + ", \"dept_id\":" + dept.getId()
-                        + ", \"dept_name\":" + "\"" + dept.getDeptName() + "\"" 
-                        + ", \"dept_no\":" + "\"" + dept.getDeptNo() + "\"" 
-                        + ", \"location\":" + "\"" + dept.getLocation() + "\""  + " }";
+                return gson.toJson(dept);
             }
    }
 
@@ -93,11 +83,6 @@ public class DepartmentModel {
           return "{\"error:\": \"Error: can't delete " + dept_id + " from " + comp + ".\"}";
 
      }
-    // @Override
-    // public String toString() {
-    //     // area = Math.PI * this.radius * this.radius;
-    //     String str = "{\"id\":\"" + this.id + "\",\"radius\":\"" + this.radius + "\", \"area\":\"" + this.area + "\"}";
-    //     return str;
-    // }
+
 
 }

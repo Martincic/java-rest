@@ -52,11 +52,7 @@ public class EmployeeServices {
                                      @FormParam("dept_id") String dept_id,
                                      @FormParam("mng_id") String mng_id
                                     ) {
-        java.sql.Date conv_date = java.sql.Date.valueOf(hire_date);
-        System.out.println(hire_date);
-        Employee empObject = new Employee(emp_name, emp_no, conv_date, job, Double.parseDouble(salary), Integer.parseInt(dept_id), Integer.parseInt(mng_id));
-        employeeModel.insertEmployee(empObject);
-        return Response.ok("Employee created: " + empObject.toString()).build();
+        return Response.ok(employeeModel.insertEmployee(emp_name, emp_no, hire_date, job, salary, dept_id, mng_id)).build();
     }
 
     @Path("employee")
@@ -64,8 +60,7 @@ public class EmployeeServices {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateEmployee(String inJson) {
-        employeeModel.updateEmployee(inJson);
-        return Response.ok("Employee Updated: " + inJson).build();
+        return Response.ok(employeeModel.updateEmployee(inJson)).build();
     }
 
     @Path("employee")
