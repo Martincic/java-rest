@@ -62,14 +62,11 @@ public class TimecardModel {
         }
         
         Timecard timecard = new Timecard(startTime, endTime, empId);
-        if(dl.insertTimecard(timecard) == null){
+        Timecard tc = dl.insertTimecard(timecard);
+        if(tc == null){
             return "{\"error:\": \"Can't add new timecard for employee id: " + empId + ", start time: " + startTime + ", end time: " + endTime + ".\"}";
         } else {
-            return "{\"success:\":{ "
-                    + "\"timecard_id \":" + timecard.getId()
-                    + ",\"start_time\": \"" + start_time
-                    + "\", \"end_time\": \"" + end_time
-                    + "\", \"emp_id\":" + empId + " } }";
+            return gson.toJson(tc);
         }
     }
 
