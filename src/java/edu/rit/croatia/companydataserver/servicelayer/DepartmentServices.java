@@ -51,10 +51,7 @@ public class DepartmentServices {
                                      @FormParam("location") String location
                                     ) {
                                          
-        Department deptObject = new Department(c, dept_name, dept_no, location);
-        // String inJson = Response.ok(deptObject.toString());
-        departmentModel.insertDepartment(deptObject);
-        return Response.ok("Department created: " + deptObject.toString()).build();
+        return Response.ok(departmentModel.insertDepartment(c, dept_name, dept_no, location)).build();
     }
 
     @Path("department")

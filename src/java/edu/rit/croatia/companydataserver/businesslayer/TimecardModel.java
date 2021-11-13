@@ -52,22 +52,24 @@ public class TimecardModel {
         Create/Insert a specific timecard
     */
     public String insertTimecard(String start_time, String end_time, int empId) {
-        try{
-            Timestamp startTime = new Timestamp(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(start_time).getTime());
-            Timestamp endTime = new Timestamp(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(end_time).getTime());  
+        Timestamp startTime, endTime;
 
-            Timecard timecard = new Timecard(startTime, endTime, empId);
-            if(dl.insertTimecard(timecard) == null){
-                return "{\"error:\": \"Can't add new timecard for employee id: " + empId + ", start time: " + startTime + ", end time: " + endTime + ".\"}";
-            } else {
-                return "{\"success:\":{ "
-                        + "\"timecard_id \":" + timecard.getId()
-                        + ",\"start_time\": \"" + start_time
-                        + "\", \"end_time\": \"" + end_time
-                        + "\", \"emp_id\":" + empId + " } }";
-            }
+        try{
+            startTime = new Timestamp(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(start_time).getTime());
+            endTime = new Timestamp(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(end_time).getTime());  
         }catch(java.text.ParseException pe){
             return "{\"error:\": \"please write time in format yyyy-MM-dd HH:mm:ss.\"}";
+        }
+        
+        Timecard timecard = new Timecard(startTime, endTime, empId);
+        if(dl.insertTimecard(timecard) == null){
+            return "{\"error:\": \"Can't add new timecard for employee id: " + empId + ", start time: " + startTime + ", end time: " + endTime + ".\"}";
+        } else {
+            return "{\"success:\":{ "
+                    + "\"timecard_id \":" + timecard.getId()
+                    + ",\"start_time\": \"" + start_time
+                    + "\", \"end_time\": \"" + end_time
+                    + "\", \"emp_id\":" + empId + " } }";
         }
     }
 

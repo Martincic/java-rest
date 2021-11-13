@@ -48,12 +48,19 @@ public class DepartmentModel {
     /*
         Create/Insert a specific department
     */
-    public Department insertDepartment(Department dept) {
-        if(dl.insertDepartment(dept) == null){
-            return null;
-        } else {
-            return dept;
-        }
+    public Department insertDepartment(String c, String dept_name, String dept_no, String location) {
+     
+        Department deptObject = new Department(c, dept_name, dept_no, location);
+        
+//        if(dl.insertDepartment(deptObject) == null){
+//                return "{\"error:\": \"Can't add new department, dept_: " + startTime + ", end time: " + endTime + ".\"}";
+//            } else {
+//                return "{\"success:\":{ "
+//                        + "\"timecard_id \":" + timecard.getId()
+//                        + ",\"start_time\": \"" + start_time
+//                        + "\", \"end_time\": \"" + end_time
+//                        + "\", \"emp_id\":" + empId + " } }";
+//            }
     }
 
 /*
