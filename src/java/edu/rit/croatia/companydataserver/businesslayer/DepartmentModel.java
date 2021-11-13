@@ -67,10 +67,19 @@ public class DepartmentModel {
 /*
     Updates a specific department
 */
-  public String updateDepartment(String dept){
-      Department department = gson.fromJson(dept, Department.class);
-      dl.updateDepartment(department);
-      return dept;
+  public String updateDepartment(String department){
+      Department dept = dl.updateDepartment(gson.fromJson(department, Department.class));
+        if(dept == null){
+                //TODO: error msgs
+                return "{\"error:\": \"Can't update department.\"}";
+            } else {
+                return "{ "
+                        + "\"company\": " + "\"" + dept.getCompany() + "\""
+                        + ", \"dept_id\":" + dept.getId()
+                        + ", \"dept_name\":" + "\"" + dept.getDeptName() + "\"" 
+                        + ", \"dept_no\":" + "\"" + dept.getDeptNo() + "\"" 
+                        + ", \"location\":" + "\"" + dept.getLocation() + "\""  + " }";
+            }
    }
 
 /*

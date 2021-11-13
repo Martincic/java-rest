@@ -60,8 +60,7 @@ public class DepartmentServices {
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateDepartment(String inJson) {
         // Department dept = gson.fromJson(inJson, Department.class);
-        departmentModel.updateDepartment(inJson);
-        return Response.ok("Department Updated: " + inJson).build();
+        return Response.ok(departmentModel.updateDepartment(inJson)).build();
     }
 
     @Path("department")
