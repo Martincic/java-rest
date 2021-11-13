@@ -3,7 +3,11 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Kuvek/Desktop/MarasovicKP2/KuvekTP2/src/java/edu/rit/croatia/companydataserver/businesslayer/Company.java</file>
+            <file>file:/C:/Users/user/Desktop/challenges/java-rest/src/java/edu/rit/croatia/companydataserver/businesslayer/CompanyModel.java</file>
+            <file>file:/C:/Users/user/Desktop/challenges/java-rest/src/java/edu/rit/croatia/companydataserver/servicelayer/DepartmentServices.java</file>
+            <file>file:/C:/Users/user/Desktop/challenges/java-rest/web/index.html</file>
+            <file>file:/C:/Users/user/Desktop/challenges/java-rest/build/web/index.html</file>
+            <file>file:/C:/Users/user/Desktop/challenges/java-rest/src/java/edu/rit/croatia/companydataserver/servicelayer/ApplicationConfig.java</file>
         </group>
     </open-files>
 </project-private>
