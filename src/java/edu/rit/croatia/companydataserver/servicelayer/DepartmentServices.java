@@ -37,7 +37,7 @@ public class DepartmentServices {
     @GET
     @Path("department")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getDepartment(@QueryParam("company") String companyName, @QueryParam("id") String id) {
+    public Response getDepartment(@QueryParam("company") String companyName, @QueryParam("dept_id") String id) {
         return Response.ok(departmentModel.getDepartment(companyName, id)).build();
     }
 
