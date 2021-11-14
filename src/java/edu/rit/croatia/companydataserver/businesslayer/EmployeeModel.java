@@ -60,32 +60,50 @@ public class EmployeeModel {
         
         validator.departmentExists(COMPANY_NAME, dept_id);
         java.sql.Date conv_date = validator.validateHireDate(hire_date);
-     return "yay";
- if(mng_id != 0) validator.employeeExists(mng_id);
+        if(mng_id != 0) validator.employeeExists(mng_id);
+        
         validator.validateUniqueEmplyeeID(emp_no, "0");
 
         if(validator.hasFailed()) return validator.errorMessage();
         
         Employee empObject = new Employee(emp_name, emp_no, conv_date, job, Double.parseDouble(salary), dept_id, mng_id);
-        
-        Employee emp = dl.insertEmployee(empObject);
-        return gson.toJson(emp);
-
+        Employee anotherOne = dl.insertEmployee(empObject);
+        return gson.toJson(anotherOne);
     }
 
     /*
         Updates a specific employee
     */
       public String updateEmployee(String employee){
-
-      Employee emp = dl.updateEmployee(gson.fromJson(employee, Employee.class));
-        if(emp == null){
-                //TODO: error msgs
-                return "{\"error:\": \"Can't update employee.\"}";
-            } else {
-                return gson.toJson(emp);
+            EmployeeJson request = null;
+            try{
+                request = gson.fromJson(employee, EmployeeJson.class);
             }
-   }
+            catch(com.google.gson.JsonSyntaxException mje) {
+                return "{\"error\": \"Malformed JSON input. Bad request.\"}";
+            }
+            Validator validator = new Validator();
+
+            validator.departmentExists(COMPANY_NAME, request.dept_id);
+            java.sql.Date conv_date = validator.validateHireDate(request.hire_date);
+            if(request.mng_id != 0) validator.employeeExists(request.mng_id);
+
+            Employee emp_exists = validator.employeeExists(request.emp_id);
+            if(validator.hasFailed()) return validator.errorMessage();
+            
+            Employee newEmp = new Employee(request.emp_id, 
+                    request.emp_name, 
+                    request.emp_no, 
+                    conv_date, 
+                    request.job, 
+                    request.salary, 
+                    request.dept_id, 
+                    request.mng_id);
+            
+            Employee emp = dl.updateEmployee(newEmp);
+            
+            return gson.toJson(emp);
+       }
 
     /*
         Deletes a specific employee

@@ -10,7 +10,6 @@ import java.text.SimpleDateFormat;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 /*
@@ -24,6 +23,7 @@ public class Validator<T> {
     private Timestamp now = new Timestamp(System.currentTimeMillis());
     
     private String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss"; 
+    private String DATE_FORMAT_SIMPLE = "yyyy-MM-dd"; 
     
     public Validator() {
         try {
@@ -91,25 +91,29 @@ public class Validator<T> {
     }
 
     public java.sql.Date validateHireDate(String hire_date){
-        Date parsed = null;
+        java.sql.Date d = null;
+        long parsed = 0L;
         try{
-            SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT);
-            parsed = format.parse(hire_date);
+            SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT_SIMPLE);
+            parsed = format.parse(hire_date).getTime();
+            d = new java.sql.Date(parsed); 
         }
         catch(ParseException pfe) {
-            addErr("Hire date does not follow the format: "+DATE_FORMAT);
+            pfe.printStackTrace();
+            addErr("Hire date does not follow the format: "+DATE_FORMAT_SIMPLE);
         }
-        Calendar start = Calendar.getInstance();
+        Calendar hire_cal = Calendar.getInstance();
         Calendar now_cal = Calendar.getInstance();
-
-        now_cal.setTimeInMillis(now.getTime());
-        start.setTimeInMillis(getTimestamp(hire_date).getTime());
-        if(start.after(now)) addErr("Hire date must be in the past.");
+        hire_cal.setTime(d);
         
-        int start_day = start.get(Calendar.DAY_OF_WEEK);
-        if(start_day < 2 || start_day > 6) addErr("Start date cannot occur on Saturday or Sunday.");
+        if(hire_cal.after(now_cal)) addErr("Hire date must be in the past.");
+        
+        int start_day = hire_cal.get(Calendar.DAY_OF_WEEK);
+        if(start_day < 2 || start_day > 6) {
+            addErr("Start date cannot occur on Saturday or Sunday.");
+        }
 
-        return new java.sql.Date(parsed.getTime());
+        return d;
     }
     
     public void validateTimecardDates(Timestamp startdate, Timestamp enddate) {
