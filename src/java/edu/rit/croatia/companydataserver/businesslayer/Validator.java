@@ -6,6 +6,7 @@ import companydata.Timecard;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -73,7 +74,7 @@ public class Validator<T> {
         }
     }
     
-    public void validateTimecardDates(Timestamp startdate, Timestamp enddate) {
+    public void validateTimecardDates(Timestamp startdate, Timestamp enddate, int emp_id) {
         Calendar start = Calendar.getInstance();
         Calendar end = Calendar.getInstance();
 
@@ -96,6 +97,18 @@ public class Validator<T> {
         
         long daysBetween = ChronoUnit.DAYS.between(start.toInstant(), now.toInstant());
         if(daysBetween > 7) addErr("You can't start more then 7 days ago.");
+        
+        //get all
+        List<Timecard> timecards = dl.getAllTimecard(emp_id);
+        ArrayList<Integer> start_dates = new ArrayList();
+        // put all start dates to array
+        for(Timecard tc: timecards) {
+            Calendar tc_start = Calendar.getInstance();
+            tc_start.setTimeInMillis(tc.getStartTime().getTime());
+            start_dates.add(tc_start.get(Calendar.DAY_OF_YEAR));
+        }
+        // if array item exists, addErr
+        if(start_dates.contains(start.get(Calendar.DAY_OF_YEAR))) addErr("A timecard already exists for the given date.");
     }
     
     private void addErr(String error) {
