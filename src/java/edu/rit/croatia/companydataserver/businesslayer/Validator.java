@@ -1,9 +1,11 @@
 package edu.rit.croatia.companydataserver.businesslayer;
 
 import companydata.DataLayer;
+import companydata.Department;
 import companydata.Employee;
 import companydata.Timecard;
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -21,6 +23,7 @@ public class Validator<T> {
     private Timestamp now = new Timestamp(System.currentTimeMillis());
     
     private String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss"; 
+    private String DATE_FORMAT_SIMPLE = "yyyy-MM-dd"; 
     
     public Validator() {
         try {
@@ -52,26 +55,65 @@ public class Validator<T> {
         return new Timestamp(0);
     }
     
-    public void employeeExists(int id) {
-        
-        Employee employee = dl.getEmployee(id);
-        if (employee == null) {
+    public Employee employeeExists(int id) {
+        Employee emp = dl.getEmployee(id);
+            
+        if (emp == null) {
             addErr("Employee with id "+id+" was not found.");
+            return null;
         }
+        else return emp;
     }
     
-    public void timecardExists(int id) {
-        
+    public Timecard timecardExists(int id) {
         Timecard tc = dl.getTimecard(id);
         if (tc == null) {
             addErr("Timecard with id "+id+" was not found.");
+            return null;
         }
+        else return tc;
     }
     
-    public void isEmpty(List<T> list) {
-        if(list.isEmpty()) {
-            addErr("No records exist in the database.");
+    public Department departmentExists(String company, int id) {
+        Department dept = dl.getDepartment(company, id);
+        
+        if (dept == null) {
+            addErr("Department with id "+id+" was not found for company: " + company);
+            return null;
         }
+        else return dept;
+    }
+    
+    public void isEmpty(List<T> list, String reason) {
+        if(list.isEmpty()) {
+            addErr("No records exist in the database for " + reason);
+        }
+    }
+
+    public java.sql.Date validateHireDate(String hire_date){
+        java.sql.Date d = null;
+        long parsed = 0L;
+        try{
+            SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT_SIMPLE);
+            parsed = format.parse(hire_date).getTime();
+            d = new java.sql.Date(parsed); 
+        }
+        catch(ParseException pfe) {
+            pfe.printStackTrace();
+            addErr("Hire date does not follow the format: "+DATE_FORMAT_SIMPLE);
+        }
+        Calendar hire_cal = Calendar.getInstance();
+        Calendar now_cal = Calendar.getInstance();
+        hire_cal.setTime(d);
+        
+        if(hire_cal.after(now_cal)) addErr("Hire date must be in the past.");
+        
+        int start_day = hire_cal.get(Calendar.DAY_OF_WEEK);
+        if(start_day < 2 || start_day > 6) {
+            addErr("Start date cannot occur on Saturday or Sunday.");
+        }
+
+        return d;
     }
     
     public void validateTimecardDates(Timestamp startdate, Timestamp enddate, int emp_id) {
@@ -111,8 +153,32 @@ public class Validator<T> {
         if(start_dates.contains(start.get(Calendar.DAY_OF_YEAR))) addErr("A timecard already exists for the given date.");
     }
     
+    public void validateUniqueDeptNo(String company, String dept_no, int current) {
+        ArrayList<String> dept_nos = new ArrayList();
+        try{
+            for(Department dept: dl.getAllDepartment(company)) {
+                
+                if(dept.getId() != current) dept_nos.add(dept.getDeptNo());
+            }
+        }
+        catch(NumberFormatException nfe){ addErr("Department ID has to be integer."); }
+        
+        if(dept_nos.contains(dept_no)) addErr("Department with number: "+dept_no+" already exists for company: "+company);
+    }
+    
+    public void validateUniqueEmplyeeID(String emp_no, String current) {
+        ArrayList<String> emp_nos = new ArrayList();
+        for(Employee emp: dl.getAllEmployee(EmployeeModel.COMPANY_NAME)) {
+            
+            if(emp.getEmpNo() != current) emp_nos.add(emp.getEmpNo());
+        }
+        
+        if(emp_nos.contains(emp_no)) addErr("Employee with id:" +emp_no+" already exists.");
+    }
+    
     private void addErr(String error) {
         this.errorMessage += "\""+error+"\",";
         this.success = false;
     }
 }
+ 

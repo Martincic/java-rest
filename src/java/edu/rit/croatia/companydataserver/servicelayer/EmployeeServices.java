@@ -36,7 +36,7 @@ public class EmployeeServices {
     @GET
     @Path("employee")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getEmployee(@QueryParam("emp_id") String id) {
+    public Response getEmployee(@QueryParam("emp_id") int id) {
         return Response.ok(employeeModel.getEmployee(id)).build();
     }
 
@@ -49,8 +49,8 @@ public class EmployeeServices {
                                      @FormParam("hire_date") String hire_date, 
                                      @FormParam("job") String job,
                                      @FormParam("salary") String salary,
-                                     @FormParam("dept_id") String dept_id,
-                                     @FormParam("mng_id") String mng_id
+                                     @FormParam("dept_id") int dept_id,
+                                     @FormParam("mng_id") int mng_id
                                     ) {
         return Response.ok(employeeModel.insertEmployee(emp_name, emp_no, hire_date, job, salary, dept_id, mng_id)).build();
     }

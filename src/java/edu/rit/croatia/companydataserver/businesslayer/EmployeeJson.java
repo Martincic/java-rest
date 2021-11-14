@@ -4,17 +4,21 @@
  */
 package edu.rit.croatia.companydataserver.businesslayer;
 
-import companydata.Timecard;
+import java.sql.Date;
 
 /**
  *
- * This class is used to convert json to Timecard object,
- * Because gson can only detect and assign primitives (Timestamp issuess)
+ * @author user
  */
-public class TimecardJson {
-    
-    public int timecard_id;
-    public String start_time;
-    public String end_time;
+
+public class EmployeeJson {
+
     public int emp_id;
+    public String emp_name;
+    public String emp_no;
+    public String hire_date;
+    public String job;
+    public Double salary;
+    public int dept_id;
+    public int mng_id;
 }

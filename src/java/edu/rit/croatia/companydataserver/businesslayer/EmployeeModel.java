@@ -11,14 +11,13 @@ import java.util.List;
 public class EmployeeModel {
 
     private DataLayer dl = null;
+    public static final String COMPANY_NAME = "tm4818";
     public Gson gson = null;
-    private Validator validator = null;
 
     public EmployeeModel() {
         try {
             this.dl = new DataLayer("kxmzgr");
             gson = new Gson();
-            validator = new Validator();
         } catch (Exception ex) {
             System.out.println("Problem with query: " + ex.getMessage());
         } finally {
@@ -27,61 +26,96 @@ public class EmployeeModel {
     }
 
     public String getEmployees(String companyName) {
+        Validator validator = new Validator();
+        
         List<Employee> employees = dl.getAllEmployee(companyName);
-        if (employees.isEmpty()) {
-            return "{\"error\": \"No employee found for company " + companyName + ".\"}";
-        }
+        validator.isEmpty(employees, "company: " + companyName);
+        
+        if(validator.hasFailed()) return validator.errorMessage();
+
         return gson.toJson(employees);
     }
 
     /*
         Gets a specific employee
     */
-    public String getEmployee(String empId) {
-        Employee employee = dl.getEmployee(Integer.parseInt(empId));
-        if (employee == null) {
-            return "{\"error\": \"No employee found for id " + empId + ".\"}";
-        }
+    public String getEmployee(int empId) {
+        Validator validator = new Validator();
+        Employee employee = validator.employeeExists(empId);
+        
+        if(validator.hasFailed()) return validator.errorMessage();
+        
+        dl.getEmployee(empId);
+        
         return gson.toJson(employee);
     }
     
     /*
         Create/Insert a specific employee
-    */
-    public String insertEmployee(String emp_name, String emp_no, String hire_date, String job, String salary, String dept_id, String mng_id) {
-        java.sql.Date conv_date = java.sql.Date.valueOf(hire_date);
-        Employee empObject = new Employee(emp_name, emp_no, conv_date, job, Double.parseDouble(salary), Integer.parseInt(dept_id), Integer.parseInt(mng_id));
-        Employee emp = dl.insertEmployee(empObject);
-        if(emp == null){
-                return "{\"error\": \"Can't add new employee, employee name: " + emp_name + ", employee number: " + emp_no + ", hire date: " + hire_date + ", job: " + job  + ", salary: " + salary + ", department id: " + dept_id + ", manager id: " + mng_id + ".\"}";
-            } else {
 
-                return gson.toJson(emp);
-            }
+        1) dept_id must exist as a Department in your company
+    */
+    public String insertEmployee(String emp_name, String emp_no, String hire_date, String job, String salary, int dept_id, int mng_id) {
+        Validator validator = new Validator();
+        
+        validator.departmentExists(COMPANY_NAME, dept_id);
+        java.sql.Date conv_date = validator.validateHireDate(hire_date);
+        if(mng_id != 0) validator.employeeExists(mng_id);
+        
+        validator.validateUniqueEmplyeeID(emp_no, "0");
+
+        if(validator.hasFailed()) return validator.errorMessage();
+        
+        Employee empObject = new Employee(emp_name, emp_no, conv_date, job, Double.parseDouble(salary), dept_id, mng_id);
+        Employee anotherOne = dl.insertEmployee(empObject);
+        return gson.toJson(anotherOne);
     }
 
     /*
         Updates a specific employee
     */
       public String updateEmployee(String employee){
-
-      Employee emp = dl.updateEmployee(gson.fromJson(employee, Employee.class));
-        if(emp == null){
-                //TODO: error msgs
-                return "{\"error:\": \"Can't update employee.\"}";
-            } else {
-                return gson.toJson(emp);
+            EmployeeJson request = null;
+            try{
+                request = gson.fromJson(employee, EmployeeJson.class);
             }
-   }
+            catch(com.google.gson.JsonSyntaxException mje) {
+                return "{\"error\": \"Malformed JSON input. Bad request.\"}";
+            }
+            Validator validator = new Validator();
+
+            validator.departmentExists(COMPANY_NAME, request.dept_id);
+            java.sql.Date conv_date = validator.validateHireDate(request.hire_date);
+            if(request.mng_id != 0) validator.employeeExists(request.mng_id);
+
+            Employee emp_exists = validator.employeeExists(request.emp_id);
+            if(validator.hasFailed()) return validator.errorMessage();
+            
+            Employee newEmp = new Employee(request.emp_id, 
+                    request.emp_name, 
+                    request.emp_no, 
+                    conv_date, 
+                    request.job, 
+                    request.salary, 
+                    request.dept_id, 
+                    request.mng_id);
+            
+            Employee emp = dl.updateEmployee(newEmp);
+            
+            return gson.toJson(emp);
+       }
+
     /*
         Deletes a specific employee
     */
       public String deleteEmployee(int empId){
-          int res = dl.deleteEmployee(empId);
-          if (res==1)
+        Validator validator = new Validator();
+        validator.employeeExists(empId);
+        
+        if(validator.hasFailed()) return validator.errorMessage();
+        
+        dl.deleteEmployee(empId);
             return "{\"success\": \"Employee " + empId + " deleted.\"}";
-          else  
-            return "{\"error\": \"Error: can't delete " + empId + ".\"}";
 
        }
 

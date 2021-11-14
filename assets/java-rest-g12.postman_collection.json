@@ -7,48 +7,7 @@
 	"item": [
 		{
 			"name": "Company",
-			"item": [
-				{
-					"name": "Delete Company",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Successful delete\", function () {\r",
-									"    pm.expect(pm.response.text()).to.include(\"success\");\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{base_path}}/company?company={{studentID}}",
-							"host": [
-								"{{base_path}}"
-							],
-							"path": [
-								"company"
-							],
-							"query": [
-								{
-									"key": "company",
-									"value": "{{studentID}}"
-								}
-							]
-						}
-					},
-					"response": []
-				}
-			]
+			"item": []
 		},
 		{
 			"name": "Departments",
@@ -90,7 +49,7 @@
 								},
 								{
 									"key": "dept_no",
-									"value": "{{studentID}}-bdfT",
+									"value": "{{studentID}}-{{$timestamp}}",
 									"type": "text"
 								},
 								{
@@ -145,7 +104,7 @@
 								},
 								{
 									"key": "dept_no",
-									"value": "{{studentID}}-bdfT",
+									"value": "{{studentID}}-123",
 									"type": "text"
 								},
 								{
@@ -207,7 +166,7 @@
 								},
 								{
 									"key": "dept_no",
-									"value": "{{studentID}}-testbd",
+									"value": "{{studentID}}-{{$timestamp}}",
 									"type": "text"
 								},
 								{
@@ -302,7 +261,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"company\": \"{{studentID}}\",\r\n    \"dept_id\": {{good_insert_dept_id}},\r\n    \"dept_name\":\"NEW NAME\",\r\n    \"dept_no\": \"{{studentID}}-bdfNew\",\r\n    \"location\": \"Maine\"\r\n}",
+							"raw": "{\r\n    \"company\": \"{{studentID}}\",\r\n    \"dept_id\": {{good_insert_dept_id}},\r\n    \"dept_name\":\"NEW NAMEE\",\r\n    \"dept_no\": \"{{studentID}} - {{$timestamp}}\",\r\n    \"location\": \"Maine\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -447,7 +406,7 @@
 								},
 								{
 									"key": "dept_no",
-									"value": "{{studentID}}-15test",
+									"value": "{{studentID}} - {{$timestamp}}",
 									"type": "text"
 								},
 								{
@@ -464,46 +423,6 @@
 							],
 							"path": [
 								"department"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Department Bad",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Response included 'Error'. Could not get department with dept_id 0\", function () {\r",
-									"    pm.expect(pm.response.text().toLowerCase()).to.include(\"error\");\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_path}}/department?company={{studentID}}&dept_id=0",
-							"host": [
-								"{{base_path}}"
-							],
-							"path": [
-								"department"
-							],
-							"query": [
-								{
-									"key": "company",
-									"value": "{{studentID}}"
-								},
-								{
-									"key": "dept_id",
-									"value": "0"
-								}
 							]
 						}
 					},
@@ -547,6 +466,46 @@
 								{
 									"key": "dept_id",
 									"value": "{{good_insert_dept_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Department Bad",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response included 'Error'. Could not get department with dept_id 0\", function () {\r",
+									"    pm.expect(pm.response.text().toLowerCase()).to.include(\"error\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_path}}/department?company={{studentID}}&dept_id=0",
+							"host": [
+								"{{base_path}}"
+							],
+							"path": [
+								"department"
+							],
+							"query": [
+								{
+									"key": "company",
+									"value": "{{studentID}}"
+								},
+								{
+									"key": "dept_id",
+									"value": "0"
 								}
 							]
 						}
@@ -713,7 +672,7 @@
 								},
 								{
 									"key": "emp_no",
-									"value": "{{studentID}}-Fr1",
+									"value": "{{studentID}}-{{$timestamp}}",
 									"type": "text"
 								},
 								{
@@ -809,7 +768,7 @@
 									"});\r",
 									"\r",
 									"pm.test(\"Response has updated employee information\", function () {\r",
-									"    pm.expect(pm.response.text()).to.include(\"bdftest\");\r",
+									"    pm.expect(pm.response.text().toLowerCase()).to.include(\"bdftest\");\r",
 									"});\r",
 									""
 								],
@@ -822,7 +781,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"company\": \"{{studentID}}\",\r\n    \"emp_id\":{{good_insert_emp_id}},\r\n    \"emp_name\":\"french\",\r\n    \"emp_no\": \"{{studentID}}-bdftest\",\r\n    \"hire_date\": \"{{lastMonday}}\",\r\n    \"job\": \"new job\",\r\n    \"salary\": 60000.0,\r\n    \"dept_id\": {{good_insert_dept_id}},\r\n    \"mng_id\": 0\r\n\r\n}",
+							"raw": "{\r\n    \"company\": \"{{studentID}}\",\r\n    \"emp_id\":132,\r\n    \"emp_name\":\"french\",\r\n    \"emp_no\": \"{{studentID}}-bdftest\",\r\n    \"hire_date\": \"{{lastMonday}}\",\r\n    \"job\": \"new job\",\r\n    \"salary\": 60000.0,\r\n    \"dept_id\": {{good_insert_dept_id}},\r\n    \"mng_id\": 0\r\n\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -967,7 +926,7 @@
 								},
 								{
 									"key": "emp_no",
-									"value": "{{studentID}}-newbdf",
+									"value": "{{studentID}}-{{$timestamp}}",
 									"type": "text"
 								},
 								{
@@ -1344,196 +1303,6 @@
 					"response": []
 				},
 				{
-					"name": "Update Timecard Bad",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"\r",
-									"pm.test(\"Response contained 'error'. Could not timecard when end time not being at least 1 hour greater than end time. \", function () {\r",
-									"    pm.expect(pm.response.text().toLowerCase()).to.include(\"error\");\r",
-									"});\r",
-									""
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"pm.collectionVariables.set(\"dateStr\", pm.collectionVariables.get(\"lastMonday\") + \" 09:00:00\")\r",
-									"pm.collectionVariables.set(\"dateStr2\", pm.collectionVariables.get(\"lastMonday\") + \" 16:00:00\")"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"company\": \"{{studentID}}\",\r\n    \"timecard_id\": {{good_insert_timecard_id}},\r\n    \"start_time\": \"{{dateStr}}\",\r\n    \"end_time\": \"{{dateStr}}\",\r\n    \"emp_id\":{{good_insert_emp_id}}\r\n\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_path}}/timecard",
-							"host": [
-								"{{base_path}}"
-							],
-							"path": [
-								"timecard"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update Timecard Good",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									"pm.test(\"Successful Timecard Update, It contains the updated information\", function () {\r",
-									"    pm.expect(pm.response.text().toLowerCase()).to.include(\"4:00\" || \"16:00\");\r",
-									"});\r",
-									""
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"pm.collectionVariables.set(\"dateStr\", pm.collectionVariables.get(\"lastMonday\") + \" 09:00:00\")\r",
-									"pm.collectionVariables.set(\"dateStr2\", pm.collectionVariables.get(\"lastMonday\") + \" 16:00:00\")"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"company\": \"{{studentID}}\",\r\n    \"timecard_id\": {{good_insert_timecard_id}},\r\n    \"start_time\": \"{{dateStr}}\",\r\n    \"end_time\": \"{{dateStr2}}\",\r\n    \"emp_id\":{{good_insert_emp_id}}\r\n\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_path}}/timecard",
-							"host": [
-								"{{base_path}}"
-							],
-							"path": [
-								"timecard"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete Timecard Bad",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"// pm.test(\"Status code is 200\", function () {\r",
-									"//     pm.response.to.have.status(200);\r",
-									"// });\r",
-									"pm.test(\"Response Includes 'error'. Could Not Delete Non-Existent Timecard\", function () {\r",
-									"    pm.expect(pm.response.text().toLowerCase()).to.include(\"error\");\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{base_path}}/timecard?company={{studentID}}&timecard_id=0",
-							"host": [
-								"{{base_path}}"
-							],
-							"path": [
-								"timecard"
-							],
-							"query": [
-								{
-									"key": "company",
-									"value": "{{studentID}}"
-								},
-								{
-									"key": "timecard_id",
-									"value": "0"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete Timecard Good",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									"pm.test(\"Successful Delete\", function () {\r",
-									"    pm.expect(pm.response.text().toLowerCase()).to.include(\"success\");\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{base_path}}/timecard?company={{studentID}}&timecard_id={{good_insert_timecard_id}}",
-							"host": [
-								"{{base_path}}"
-							],
-							"path": [
-								"timecard"
-							],
-							"query": [
-								{
-									"key": "company",
-									"value": "{{studentID}}"
-								},
-								{
-									"key": "timecard_id",
-									"value": "{{good_insert_timecard_id}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "Insert Timecard Good 2",
 					"event": [
 						{
@@ -1594,6 +1363,110 @@
 									"type": "text"
 								}
 							]
+						},
+						"url": {
+							"raw": "{{base_path}}/timecard",
+							"host": [
+								"{{base_path}}"
+							],
+							"path": [
+								"timecard"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Timecard Bad",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"pm.test(\"Response contained 'error'. Could not timecard when end time not being at least 1 hour greater than end time. \", function () {\r",
+									"    pm.expect(pm.response.text().toLowerCase()).to.include(\"error\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"dateStr\", pm.collectionVariables.get(\"lastMonday\") + \" 09:00:00\")\r",
+									"pm.collectionVariables.set(\"dateStr2\", pm.collectionVariables.get(\"lastMonday\") + \" 16:00:00\")"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"company\": \"{{studentID}}\",\r\n    \"timecard_id\": {{good_insert_timecard_id}},\r\n    \"start_time\": \"{{dateStr}}\",\r\n    \"end_time\": \"{{dateStr}}\",\r\n    \"emp_id\":{{good_insert_emp_id}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_path}}/timecard",
+							"host": [
+								"{{base_path}}"
+							],
+							"path": [
+								"timecard"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Timecard Good",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Successful Timecard Update, It contains the updated information\", function () {\r",
+									"    pm.expect(pm.response.text().toLowerCase()).to.include(\"4:00\" || \"16:00\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"dateStr\", pm.collectionVariables.get(\"lastMonday\") + \" 09:00:00\")\r",
+									"pm.collectionVariables.set(\"dateStr2\", pm.collectionVariables.get(\"lastMonday\") + \" 16:00:00\")"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"company\": \"{{studentID}}\",\r\n    \"timecard_id\": {{good_insert_timecard_id}},\r\n    \"start_time\": \"{{dateStr}}\",\r\n    \"end_time\": \"{{dateStr2}}\",\r\n    \"emp_id\":{{good_insert_emp_id}}\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
 						},
 						"url": {
 							"raw": "{{base_path}}/timecard",
@@ -1734,25 +1607,19 @@
 						}
 					},
 					"response": []
-				}
-			]
-		},
-		{
-			"name": "Final Delete All and Get All",
-			"item": [
+				},
 				{
-					"name": "Delete Company",
+					"name": "Delete Timecard Bad",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Successful delete\", function () {\r",
-									"    pm.expect(pm.response.text()).to.include(\"success\");\r",
+									"// pm.test(\"Status code is 200\", function () {\r",
+									"//     pm.response.to.have.status(200);\r",
+									"// });\r",
+									"pm.test(\"Response Includes 'error'. Could Not Delete Non-Existent Timecard\", function () {\r",
+									"    pm.expect(pm.response.text().toLowerCase()).to.include(\"error\");\r",
 									"});"
 								],
 								"type": "text/javascript"
@@ -1763,23 +1630,75 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{base_path}}/company?company={{studentID}}",
+							"raw": "{{base_path}}/timecard?company={{studentID}}&timecard_id=0",
 							"host": [
 								"{{base_path}}"
 							],
 							"path": [
-								"company"
+								"timecard"
 							],
 							"query": [
 								{
 									"key": "company",
 									"value": "{{studentID}}"
+								},
+								{
+									"key": "timecard_id",
+									"value": "0"
 								}
 							]
 						}
 					},
 					"response": []
 				},
+				{
+					"name": "Delete Timecard Good",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Successful Delete\", function () {\r",
+									"    pm.expect(pm.response.text().toLowerCase()).to.include(\"success\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_path}}/timecard?company={{studentID}}&timecard_id={{good_insert_timecard_id}}",
+							"host": [
+								"{{base_path}}"
+							],
+							"path": [
+								"timecard"
+							],
+							"query": [
+								{
+									"key": "company",
+									"value": "{{studentID}}"
+								},
+								{
+									"key": "timecard_id",
+									"value": "{{good_insert_timecard_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Final Delete All and Get All",
+			"item": [
 				{
 					"name": "Get all timecards",
 					"event": [
@@ -2005,7 +1924,7 @@
 		},
 		{
 			"key": "good_insert_timecard_id",
-			"value": ""
+			"value": "33"
 		}
 	]
 }
