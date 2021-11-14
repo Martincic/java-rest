@@ -47,11 +47,11 @@ public class TimecardServices {
     @Path("timecard")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response insertTimecard(@FormParam("emp_id") int empId,
+    public Response insertTimecard(@FormParam("emp_id") int emp_id,
                                      @FormParam("start_time") String start_time,
                                      @FormParam("end_time") String end_time
                                     ) {
-        return Response.ok(timecardModel.insertTimecard(start_time, end_time, empId)).build();
+        return Response.ok(timecardModel.insertTimecard(start_time, end_time, emp_id)).build();
     }
 
     @Path("timecard")

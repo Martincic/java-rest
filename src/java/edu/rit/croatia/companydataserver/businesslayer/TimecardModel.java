@@ -15,13 +15,11 @@ public class TimecardModel {
 
     private DataLayer dl = null;
     public Gson gson = null;
-    private Validator validator = null;
 
     public TimecardModel() {
         try {
             this.dl = new DataLayer("kxmzgr");
             gson = new Gson();
-            validator = new Validator();
         } catch (Exception ex) {
             System.out.println("Problem with query: " + ex.getMessage());
         } finally {
@@ -30,7 +28,14 @@ public class TimecardModel {
     }
 
     public String getTimecards(int emp_id) {
+        Validator validator = new Validator();
+        validator.employeeExists(emp_id);
+        
         List<Timecard> timecards = dl.getAllTimecard(emp_id);
+        validator.isEmpty(timecards);
+        
+        if(validator.hasFailed()) return validator.errorMessage();
+        
         if (timecards.isEmpty()) {
             return "{\"error:\": \"No timecards found for employee " + emp_id + ".\"}";
         }
@@ -41,10 +46,12 @@ public class TimecardModel {
         Gets a specific timecard
     */
     public String getTimecard(int timecard_id) {
+        Validator validator = new Validator();
+        validator.timecardExists(timecard_id);
+        
+        if(validator.hasFailed()) return validator.errorMessage();
+        
         Timecard timecard = dl.getTimecard(timecard_id);
-        if (timecard == null) {
-            return "{\"error:\": \"No timecard found for timecardID: " + timecard_id + ".\"}";
-        }
         return gson.toJson(timecard);
     }
     
@@ -52,19 +59,19 @@ public class TimecardModel {
         Create/Insert a specific timecard
     */
     public String insertTimecard(String start_time, String end_time, int empId) {
-        Timestamp startTime, endTime;
-
-        try{
-            startTime = new Timestamp(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(start_time).getTime());
-            endTime = new Timestamp(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(end_time).getTime());  
-        }catch(java.text.ParseException pe){
-            return "{\"error:\": \"please write time in format yyyy-MM-dd HH:mm:ss.\"}";
-        }
+        Validator validator = new Validator();
+        
+        Timestamp startTime = validator.getTimestamp(start_time);
+        Timestamp endTime = validator.getTimestamp(end_time);
+        validator.employeeExists(empId);
+        validator.validateTimecardDates(start_time, end_time);
+        
+        if(validator.hasFailed()) return validator.errorMessage();
         
         Timecard timecard = new Timecard(startTime, endTime, empId);
         Timecard tc = dl.insertTimecard(timecard);
         if(tc == null){
-            return "{\"error:\": \"Can't add new timecard for employee id: " + empId + ", start time: " + startTime + ", end time: " + endTime + ".\"}";
+            return validator.errorMessage();
         } else {
             return gson.toJson(tc);
         }
@@ -83,11 +90,16 @@ public class TimecardModel {
         Deletes a specific timecard
     */
       public String deleteTimecard(int timecardId){
+        Validator validator = new Validator();
+        validator.timecardExists(timecardId);
+        
+        if(validator.hasFailed()) return validator.errorMessage();
+        
           int res = dl.deleteTimecard(timecardId);
           if (res==1)
             return "{\"success:\": \"Timecard " + timecardId + " deleted.\"}";
           else  
-            return "{\"error:\": \"can't delete timecard " + timecardId + ".\"}";
+            return validator.errorMessage();
       }
 
 
