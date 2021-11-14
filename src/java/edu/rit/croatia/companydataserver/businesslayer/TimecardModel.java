@@ -3,7 +3,6 @@ package edu.rit.croatia.companydataserver.businesslayer;
 import com.google.gson.Gson;
 import companydata.*;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import companydata.Timecard;
 import java.util.List;
 
@@ -82,9 +81,21 @@ public class TimecardModel {
         Updates a specific timecard
     */
       public String updateTimecard(String tc){
-          Timecard timecard = gson.fromJson(tc, Timecard.class);
-          dl.updateTimecard(timecard);
-          return tc;
+        TimecardJson request = gson.fromJson(tc, TimecardJson.class);
+        Validator validator = new Validator();
+        
+        Timestamp start_time = validator.getTimestamp(request.start_time);
+        Timestamp end_time = validator.getTimestamp(request.end_time);
+        validator.employeeExists(request.emp_id);
+        validator.timecardExists(request.timecard_id);
+
+        validator.validateTimecardDates(start_time, end_time);
+
+        if(validator.hasFailed()) return validator.errorMessage();
+        
+        Timecard from_request = new Timecard(request.timecard_id, start_time, end_time, request.emp_id);
+        
+        return gson.toJson(dl.updateTimecard(from_request));
        }
 
     /*
