@@ -9,7 +9,7 @@ import javax.ws.rs.*;
 /**
  * REST Web Service
  *
- * @author Kristina
+ * @author G12
  */
 @Path("CompanyServices")
 public class EmployeeServices {

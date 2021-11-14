@@ -8,7 +8,7 @@ import java.sql.Date;
 
 /**
  *
- * @author user
+ * @author G12
  */
 
 public class EmployeeJson {

@@ -10,7 +10,7 @@ import javax.ws.rs.*;
 /**
  * REST Web Service
  *
- * @author sara
+ * @author G12
  */
 @Path("CompanyServices")
 public class TimecardServices {

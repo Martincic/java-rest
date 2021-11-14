@@ -7,7 +7,7 @@ import java.util.List;
 
 /**
  *
- * @author Kristina
+ * @author G12
  */
 public class DepartmentModel {
 

@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "ad97f8b8-2421-4eae-a0d7-7d0043b75ced",
+		"_postman_id": "ebb72633-e9da-4b77-a3ab-19ccfcdf059c",
 		"name": "java-rest-g12",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -1162,148 +1162,7 @@
 					"response": []
 				},
 				{
-					"name": "Insert Timecard Bad 2",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Bad timecard was not inserted. End time must be 1 hour greater than start time.\", function () {\r",
-									"    pm.expect(pm.response.text().toLowerCase()).to.include(\"error\");\r",
-									"});\r",
-									"\r",
-									""
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"pm.collectionVariables.set(\"dateStr\", pm.collectionVariables.get(\"lastMonday\") + \" 08:00:00\")\r",
-									"//pm.collectionVariables.set(\"dateStr2\", pm.collectionVariables.get(\"lastMonday\") + \" 17:00:00\")"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "company",
-									"value": "{{studentID}}",
-									"type": "text"
-								},
-								{
-									"key": "emp_id",
-									"value": "{{good_insert_emp_id}}",
-									"type": "text"
-								},
-								{
-									"key": "start_time",
-									"value": "{{dateStr}}",
-									"type": "text"
-								},
-								{
-									"key": "end_time",
-									"value": "{{dateStr}}",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{base_path}}/timecard",
-							"host": [
-								"{{base_path}}"
-							],
-							"path": [
-								"timecard"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "Insert Timecard Good",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Successful timecard insert\", function () {\r",
-									"    pm.expect(pm.response.text().toLowerCase()).to.include(\"timecard_id\");\r",
-									"});\r",
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									"\r",
-									"var json = JSON.parse(responseBody);\r",
-									"console.log(json)\r",
-									"pm.collectionVariables.set(\"good_insert_timecard_id\", json.timecard_id || json.success.timecard_id || 0);\r",
-									""
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"pm.collectionVariables.set(\"dateStr\", pm.collectionVariables.get(\"lastMonday\") + \" 08:00:00\")\r",
-									"pm.collectionVariables.set(\"dateStr2\", pm.collectionVariables.get(\"lastMonday\") + \" 17:00:00\")\r",
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "company",
-									"value": "{{studentID}}",
-									"type": "text"
-								},
-								{
-									"key": "emp_id",
-									"value": "{{good_insert_emp_id}}",
-									"type": "text"
-								},
-								{
-									"key": "start_time",
-									"value": "{{dateStr}}",
-									"type": "text"
-								},
-								{
-									"key": "end_time",
-									"value": "{{dateStr2}}",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{base_path}}/timecard",
-							"host": [
-								"{{base_path}}"
-							],
-							"path": [
-								"timecard"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Insert Timecard Good 2",
 					"event": [
 						{
 							"listen": "test",
@@ -1481,6 +1340,233 @@
 					"response": []
 				},
 				{
+					"name": "Delete Timecard Bad",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// pm.test(\"Status code is 200\", function () {\r",
+									"//     pm.response.to.have.status(200);\r",
+									"// });\r",
+									"pm.test(\"Response Includes 'error'. Could Not Delete Non-Existent Timecard\", function () {\r",
+									"    pm.expect(pm.response.text().toLowerCase()).to.include(\"error\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_path}}/timecard?company={{studentID}}&timecard_id=0",
+							"host": [
+								"{{base_path}}"
+							],
+							"path": [
+								"timecard"
+							],
+							"query": [
+								{
+									"key": "company",
+									"value": "{{studentID}}"
+								},
+								{
+									"key": "timecard_id",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Timecard Good",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Successful Delete\", function () {\r",
+									"    pm.expect(pm.response.text().toLowerCase()).to.include(\"success\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_path}}/timecard?company={{studentID}}&timecard_id={{good_insert_timecard_id}}",
+							"host": [
+								"{{base_path}}"
+							],
+							"path": [
+								"timecard"
+							],
+							"query": [
+								{
+									"key": "company",
+									"value": "{{studentID}}"
+								},
+								{
+									"key": "timecard_id",
+									"value": "{{good_insert_timecard_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Insert Timecard Bad 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Bad timecard was not inserted. End time must be 1 hour greater than start time.\", function () {\r",
+									"    pm.expect(pm.response.text().toLowerCase()).to.include(\"error\");\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"dateStr\", pm.collectionVariables.get(\"lastMonday\") + \" 08:00:00\")\r",
+									"//pm.collectionVariables.set(\"dateStr2\", pm.collectionVariables.get(\"lastMonday\") + \" 17:00:00\")"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "company",
+									"value": "{{studentID}}",
+									"type": "text"
+								},
+								{
+									"key": "emp_id",
+									"value": "{{good_insert_emp_id}}",
+									"type": "text"
+								},
+								{
+									"key": "start_time",
+									"value": "{{dateStr}}",
+									"type": "text"
+								},
+								{
+									"key": "end_time",
+									"value": "{{dateStr}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_path}}/timecard",
+							"host": [
+								"{{base_path}}"
+							],
+							"path": [
+								"timecard"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Insert Timecard Good 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful timecard insert\", function () {\r",
+									"    pm.expect(pm.response.text().toLowerCase()).to.include(\"timecard_id\");\r",
+									"});\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var json = JSON.parse(responseBody);\r",
+									"console.log(json)\r",
+									"pm.collectionVariables.set(\"good_insert_timecard_id\", json.timecard_id || json.success.timecard_id || 0);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"dateStr\", pm.collectionVariables.get(\"lastMonday\") + \" 08:00:00\")\r",
+									"pm.collectionVariables.set(\"dateStr2\", pm.collectionVariables.get(\"lastMonday\") + \" 17:00:00\")\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "company",
+									"value": "{{studentID}}",
+									"type": "text"
+								},
+								{
+									"key": "emp_id",
+									"value": "{{good_insert_emp_id}}",
+									"type": "text"
+								},
+								{
+									"key": "start_time",
+									"value": "{{dateStr}}",
+									"type": "text"
+								},
+								{
+									"key": "end_time",
+									"value": "{{dateStr2}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_path}}/timecard",
+							"host": [
+								"{{base_path}}"
+							],
+							"path": [
+								"timecard"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Get Timecard Bad",
 					"event": [
 						{
@@ -1602,92 +1688,6 @@
 								{
 									"key": "emp_id",
 									"value": "{{good_insert_emp_id}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete Timecard Bad",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"// pm.test(\"Status code is 200\", function () {\r",
-									"//     pm.response.to.have.status(200);\r",
-									"// });\r",
-									"pm.test(\"Response Includes 'error'. Could Not Delete Non-Existent Timecard\", function () {\r",
-									"    pm.expect(pm.response.text().toLowerCase()).to.include(\"error\");\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{base_path}}/timecard?company={{studentID}}&timecard_id=0",
-							"host": [
-								"{{base_path}}"
-							],
-							"path": [
-								"timecard"
-							],
-							"query": [
-								{
-									"key": "company",
-									"value": "{{studentID}}"
-								},
-								{
-									"key": "timecard_id",
-									"value": "0"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete Timecard Good",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									"pm.test(\"Successful Delete\", function () {\r",
-									"    pm.expect(pm.response.text().toLowerCase()).to.include(\"success\");\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{base_path}}/timecard?company={{studentID}}&timecard_id={{good_insert_timecard_id}}",
-							"host": [
-								"{{base_path}}"
-							],
-							"path": [
-								"timecard"
-							],
-							"query": [
-								{
-									"key": "company",
-									"value": "{{studentID}}"
-								},
-								{
-									"key": "timecard_id",
-									"value": "{{good_insert_timecard_id}}"
 								}
 							]
 						}

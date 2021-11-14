@@ -8,7 +8,7 @@ import java.util.List;
 
 /**
  *
- * @author sara
+ * @author G12
  */
 public class TimecardModel {
 
