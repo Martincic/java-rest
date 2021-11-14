@@ -1892,7 +1892,7 @@
 		},
 		{
 			"key": "good_insert_dept_id",
-			"value": ""
+			"value": "169"
 		},
 		{
 			"key": "war_name",
@@ -1900,31 +1900,31 @@
 		},
 		{
 			"key": "base_path",
-			"value": ""
+			"value": "localhost:8080/java-rest/webresources/CompanyServices"
 		},
 		{
 			"key": "lastSunday",
-			"value": ""
+			"value": "2021-11-14"
 		},
 		{
 			"key": "lastMonday",
-			"value": ""
+			"value": "2021-11-08"
 		},
 		{
 			"key": "good_insert_emp_id",
-			"value": ""
+			"value": "144"
 		},
 		{
 			"key": "dateStr",
-			"value": ""
+			"value": "2021-11-08 09:00:00"
 		},
 		{
 			"key": "dateStr2",
-			"value": ""
+			"value": "2021-11-08 16:00:00"
 		},
 		{
 			"key": "good_insert_timecard_id",
-			"value": "33"
+			"value": "77"
 		}
 	]
 }
