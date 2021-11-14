@@ -64,8 +64,9 @@ public class TimecardModel {
         Timestamp startTime = validator.getTimestamp(start_time);
         Timestamp endTime = validator.getTimestamp(end_time);
         validator.employeeExists(empId);
-        validator.validateTimecardDates(start_time, end_time);
-        
+
+        validator.validateTimecardDates(startTime, endTime);
+
         if(validator.hasFailed()) return validator.errorMessage();
         
         Timecard timecard = new Timecard(startTime, endTime, empId);
