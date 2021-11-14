@@ -1,11 +1,13 @@
 package edu.rit.croatia.companydataserver.businesslayer;
 
 import companydata.DataLayer;
+import companydata.Department;
 import companydata.Employee;
 import companydata.Timecard;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -67,9 +69,21 @@ public class Validator<T> {
         }
     }
     
-    public void isEmpty(List<T> list) {
+    public void departmentExists(String company, String id) {
+        Department dept = null;
+        try{
+            dept = dl.getDepartment(company, Integer.parseInt(id));
+        }
+        catch(NumberFormatException nfe){ addErr("Department ID has to be integer."); }
+        
+        if (dept == null) {
+            addErr("Department with id "+id+" was not found for company: " + company);
+        }
+    }
+    
+    public void isEmpty(List<T> list, String reason) {
         if(list.isEmpty()) {
-            addErr("No records exist in the database.");
+            addErr("No records exist in the database for " + reason);
         }
     }
     
@@ -96,8 +110,22 @@ public class Validator<T> {
         if(daysBetween > 7) addErr("You can't start more then 7 days ago.");
     }
     
+    public void validateUniqueDeptNo(String company, String dept_no, int current) {
+        ArrayList<String> dept_nos = new ArrayList();
+        try{
+            for(Department dept: dl.getAllDepartment(company)) {
+                
+                if(dept.getId() != current) dept_nos.add(dept.getDeptNo());
+            }
+        }
+        catch(NumberFormatException nfe){ addErr("Department ID has to be integer."); }
+        
+        if(dept_nos.contains(dept_no)) addErr("Department with number: "+dept_no+" already exists for company: "+company);
+    }
+    
     private void addErr(String error) {
         this.errorMessage += "\""+error+"\",";
         this.success = false;
     }
 }
+ 

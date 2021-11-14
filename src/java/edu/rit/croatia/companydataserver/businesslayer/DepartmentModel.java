@@ -2,6 +2,7 @@ package edu.rit.croatia.companydataserver.businesslayer;
 
 import com.google.gson.Gson;
 import companydata.*;
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -12,13 +13,11 @@ public class DepartmentModel {
 
     private DataLayer dl = null;
     public Gson gson = null;
-    private Validator validator = null;
 
     public DepartmentModel() {
         try {
             this.dl = new DataLayer("kxmzgr");
             gson = new Gson();
-            validator = new Validator();
         } catch (Exception ex) {
             System.out.println("Problem with query: " + ex.getMessage());
         } finally {
@@ -27,10 +26,13 @@ public class DepartmentModel {
     }
 
     public String getDepartments(String companyName) {
+        Validator validator = new Validator();
+        
         List<Department> departments = dl.getAllDepartment(companyName);
-        if (departments.isEmpty()) {
-            return "{\"error:\": \"No department found for company " + companyName + ".\"}";
-        }
+        validator.isEmpty(departments, "company: " + companyName);
+        
+        if(validator.hasFailed()) return validator.errorMessage();
+        
         return gson.toJson(departments);
     }
 
@@ -38,6 +40,11 @@ public class DepartmentModel {
         Gets a specific department
     */
     public String getDepartment(String companyName, String deptId) {
+        Validator validator = new Validator();
+        validator.departmentExists(companyName, deptId);
+        
+        if(validator.hasFailed()) return validator.errorMessage();
+        
         Department department = dl.getDepartment(companyName, Integer.parseInt(deptId));
         if (department == null) {
             return "{\"error:\": \"No department found for company " + companyName + ".\"}";
@@ -49,40 +56,49 @@ public class DepartmentModel {
         Create/Insert a specific department
     */
     public String insertDepartment(String c, String dept_name, String dept_no, String location) {
-     
+        Validator validator = new Validator();
+        validator.validateUniqueDeptNo(c, dept_no, 0);
+
+        if(validator.hasFailed()) return validator.errorMessage();
+        
         Department deptObject = new Department(c, dept_name, dept_no, location);
         Department dept = dl.insertDepartment(deptObject); 
-        if(dept == null){
-                return "{\"error:\": \"Can't add new department, department name: " + dept_name + ", department number: " + dept_no + ", location: " + location + ".\"}";
-            } else {
-                return gson.toJson(dept);
-            }
+
+        return gson.toJson(dept);
     }
 
 /*
     Updates a specific department
 */
   public String updateDepartment(String department){
-      Department dept = dl.updateDepartment(gson.fromJson(department, Department.class));
-        if(dept == null){
-                //TODO: error msgs
-                return "{\"error:\": \"Can't update department.\"}";
-            } else {
-                return gson.toJson(dept);
-            }
+      Department dept = null;
+      Validator validator = new Validator();
+      
+      try{
+        dept = gson.fromJson(department, Department.class);
+      }  
+      catch(com.google.gson.JsonSyntaxException mje) {
+          return "{\"error:\": \"Malformed JSON input. Bad request.\"}";
+      }
+      
+      validator.departmentExists(dept.getCompany(), String.valueOf(dept.getId()));
+      validator.validateUniqueDeptNo(dept.getCompany(), String.valueOf(dept.getDeptNo()), dept.getId());
+      if(validator.hasFailed()) return validator.errorMessage();
+      
+      return gson.toJson(dl.updateDepartment(dept));
    }
 
 /*
     Deletes a specific department
 */
   public String deleteDepartment(String comp, int dept_id){
-        int res = dl.deleteDepartment(comp, dept_id);
-        if (res==1)
-          return "{\"success:\": \"Department " + dept_id + " from " + comp +" deleted.\"}";
-        else  
-          return "{\"error:\": \"Error: can't delete " + dept_id + " from " + comp + ".\"}";
+      Validator validator = new Validator();
+      validator.departmentExists(comp, String.valueOf(dept_id));
+      if(validator.hasFailed()) return validator.errorMessage();
 
-     }
+      dl.deleteDepartment(comp, dept_id);
+      return "{\"success:\": \"Department " + dept_id + " from " + comp +" deleted.\"}";
+   }
 
 
 }

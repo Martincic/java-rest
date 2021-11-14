@@ -31,13 +31,10 @@ public class TimecardModel {
         validator.employeeExists(emp_id);
         
         List<Timecard> timecards = dl.getAllTimecard(emp_id);
-        validator.isEmpty(timecards);
+        validator.isEmpty(timecards, "employee with id " + emp_id);
         
         if(validator.hasFailed()) return validator.errorMessage();
         
-        if (timecards.isEmpty()) {
-            return "{\"error:\": \"No timecards found for employee " + emp_id + ".\"}";
-        }
         return gson.toJson(timecards);
     }
 
@@ -81,7 +78,14 @@ public class TimecardModel {
         Updates a specific timecard
     */
       public String updateTimecard(String tc){
-        TimecardJson request = gson.fromJson(tc, TimecardJson.class);
+        TimecardJson request = null;
+        try{
+            request = gson.fromJson(tc, TimecardJson.class);
+        }
+        catch(com.google.gson.JsonSyntaxException mje) {
+            return "{\"error:\": \"Malformed JSON input. Bad request.\"}";
+        }
+        
         Validator validator = new Validator();
         
         Timestamp start_time = validator.getTimestamp(request.start_time);
@@ -113,6 +117,4 @@ public class TimecardModel {
           else  
             return validator.errorMessage();
       }
-
-
 }
