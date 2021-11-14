@@ -91,6 +91,8 @@ public class Validator<T> {
         int start_hour = start.get(Calendar.HOUR_OF_DAY);
         int end_hour = end.get(Calendar.HOUR_OF_DAY);
         if((end_hour - start_hour) < 1) addErr("There must be at least 1 hour difference between timestamps.");
+        if(start_hour < 6) addErr("Start hour must be after 6am");
+        if(end_hour > 18) addErr("End hour must be before 6pm");
         
         long daysBetween = ChronoUnit.DAYS.between(start.toInstant(), now.toInstant());
         if(daysBetween > 7) addErr("You can't start more then 7 days ago.");

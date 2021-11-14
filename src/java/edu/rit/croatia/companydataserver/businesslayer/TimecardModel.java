@@ -35,9 +35,6 @@ public class TimecardModel {
         
         if(validator.hasFailed()) return validator.errorMessage();
         
-        if (timecards.isEmpty()) {
-            return "{\"error:\": \"No timecards found for employee " + emp_id + ".\"}";
-        }
         return gson.toJson(timecards);
     }
 
@@ -107,12 +104,7 @@ public class TimecardModel {
         
         if(validator.hasFailed()) return validator.errorMessage();
         
-          int res = dl.deleteTimecard(timecardId);
-          if (res==1)
-            return "{\"success:\": \"Timecard " + timecardId + " deleted.\"}";
-          else  
-            return validator.errorMessage();
+        dl.deleteTimecard(timecardId);
+        return "{\"success:\": \"Timecard " + timecardId + " deleted.\"}";
       }
-
-
 }
