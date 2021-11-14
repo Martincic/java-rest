@@ -60,7 +60,7 @@ public class TimecardModel {
         Timestamp endTime = validator.getTimestamp(end_time);
         validator.employeeExists(empId);
 
-        validator.validateTimecardDates(startTime, endTime, empId);
+        validator.validateTimecardDates(startTime, endTime, empId, false);
 
         if(validator.hasFailed()) return validator.errorMessage();
         
@@ -90,15 +90,19 @@ public class TimecardModel {
         Timestamp start_time = validator.getTimestamp(request.start_time);
         Timestamp end_time = validator.getTimestamp(request.end_time);
         validator.employeeExists(request.emp_id);
-        validator.timecardExists(request.timecard_id);
 
-        validator.validateTimecardDates(start_time, end_time, request.emp_id);
+        validator.validateTimecardDates(start_time, end_time, request.emp_id, true);
 
         if(validator.hasFailed()) return validator.errorMessage();
         
         Timecard from_request = new Timecard(request.timecard_id, start_time, end_time, request.emp_id);
         
-        return gson.toJson(dl.updateTimecard(from_request));
+        Timecard updated = dl.updateTimecard(from_request);
+        if(updated == null) {
+            validator.timecardExists(request.timecard_id);
+            return validator.errorMessage();
+        }
+        return gson.toJson(updated);
        }
 
     /*

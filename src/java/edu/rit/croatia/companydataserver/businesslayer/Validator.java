@@ -116,7 +116,7 @@ public class Validator<T> {
         return d;
     }
     
-    public void validateTimecardDates(Timestamp startdate, Timestamp enddate, int emp_id) {
+    public void validateTimecardDates(Timestamp startdate, Timestamp enddate, int emp_id, boolean update) {
         Calendar start = Calendar.getInstance();
         Calendar end = Calendar.getInstance();
 
@@ -150,7 +150,7 @@ public class Validator<T> {
             start_dates.add(tc_start.get(Calendar.DAY_OF_YEAR));
         }
         // if array item exists, addErr
-        if(start_dates.contains(start.get(Calendar.DAY_OF_YEAR))) addErr("A timecard already exists for the given date.");
+        if(!update && start_dates.contains(start.get(Calendar.DAY_OF_YEAR))) addErr("A timecard already exists for the given date.");
     }
     
     public void validateUniqueDeptNo(String company, String dept_no, int current) {
