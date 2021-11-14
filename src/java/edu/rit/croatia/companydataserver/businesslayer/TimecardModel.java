@@ -43,11 +43,10 @@ public class TimecardModel {
     */
     public String getTimecard(int timecard_id) {
         Validator validator = new Validator();
-        validator.timecardExists(timecard_id);
+        Timecard timecard = validator.timecardExists(timecard_id);
         
         if(validator.hasFailed()) return validator.errorMessage();
         
-        Timecard timecard = dl.getTimecard(timecard_id);
         return gson.toJson(timecard);
     }
     
@@ -83,7 +82,7 @@ public class TimecardModel {
             request = gson.fromJson(tc, TimecardJson.class);
         }
         catch(com.google.gson.JsonSyntaxException mje) {
-            return "{\"error:\": \"Malformed JSON input. Bad request.\"}";
+            return "{\"error\": \"Malformed JSON input. Bad request.\"}";
         }
         
         Validator validator = new Validator();
@@ -111,10 +110,8 @@ public class TimecardModel {
         
         if(validator.hasFailed()) return validator.errorMessage();
         
-          int res = dl.deleteTimecard(timecardId);
-          if (res==1)
-            return "{\"success:\": \"Timecard " + timecardId + " deleted.\"}";
-          else  
-            return validator.errorMessage();
+        dl.deleteTimecard(timecardId);
+        return "{\"success\": \"Timecard " + timecardId + " deleted.\"}";
+
       }
 }

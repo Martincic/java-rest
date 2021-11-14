@@ -5,10 +5,12 @@ import companydata.Department;
 import companydata.Employee;
 import companydata.Timecard;
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /*
@@ -53,38 +55,61 @@ public class Validator<T> {
         return new Timestamp(0);
     }
     
-    public void employeeExists(int id) {
-        
-        Employee employee = dl.getEmployee(id);
-        if (employee == null) {
+    public Employee employeeExists(int id) {
+        Employee emp = dl.getEmployee(id);
+            
+        if (emp == null) {
             addErr("Employee with id "+id+" was not found.");
+            return null;
         }
+        else return emp;
     }
     
-    public void timecardExists(int id) {
-        
+    public Timecard timecardExists(int id) {
         Timecard tc = dl.getTimecard(id);
         if (tc == null) {
             addErr("Timecard with id "+id+" was not found.");
+            return null;
         }
+        else return tc;
     }
     
-    public void departmentExists(String company, String id) {
-        Department dept = null;
-        try{
-            dept = dl.getDepartment(company, Integer.parseInt(id));
-        }
-        catch(NumberFormatException nfe){ addErr("Department ID has to be integer."); }
+    public Department departmentExists(String company, int id) {
+        Department dept = dl.getDepartment(company, id);
         
         if (dept == null) {
             addErr("Department with id "+id+" was not found for company: " + company);
+            return null;
         }
+        else return dept;
     }
     
     public void isEmpty(List<T> list, String reason) {
         if(list.isEmpty()) {
             addErr("No records exist in the database for " + reason);
         }
+    }
+
+    public java.sql.Date validateHireDate(String hire_date){
+        Date parsed = null;
+        try{
+            SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT);
+            parsed = format.parse(hire_date);
+        }
+        catch(ParseException pfe) {
+            addErr("Hire date does not follow the format: "+DATE_FORMAT);
+        }
+        Calendar start = Calendar.getInstance();
+        Calendar now_cal = Calendar.getInstance();
+
+        now_cal.setTimeInMillis(now.getTime());
+        start.setTimeInMillis(getTimestamp(hire_date).getTime());
+        if(start.after(now)) addErr("Hire date must be in the past.");
+        
+        int start_day = start.get(Calendar.DAY_OF_WEEK);
+        if(start_day < 2 || start_day > 6) addErr("Start date cannot occur on Saturday or Sunday.");
+
+        return new java.sql.Date(parsed.getTime());
     }
     
     public void validateTimecardDates(Timestamp startdate, Timestamp enddate) {
@@ -121,6 +146,16 @@ public class Validator<T> {
         catch(NumberFormatException nfe){ addErr("Department ID has to be integer."); }
         
         if(dept_nos.contains(dept_no)) addErr("Department with number: "+dept_no+" already exists for company: "+company);
+    }
+    
+    public void validateUniqueEmplyeeID(String emp_no, String current) {
+        ArrayList<String> emp_nos = new ArrayList();
+        for(Employee emp: dl.getAllEmployee(EmployeeModel.COMPANY_NAME)) {
+            
+            if(emp.getEmpNo() != current) emp_nos.add(emp.getEmpNo());
+        }
+        
+        if(emp_nos.contains(emp_no)) addErr("Employee with id:" +emp_no+" already exists.");
     }
     
     private void addErr(String error) {

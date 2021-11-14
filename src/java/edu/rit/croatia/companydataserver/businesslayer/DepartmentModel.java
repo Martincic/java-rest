@@ -39,17 +39,13 @@ public class DepartmentModel {
     /*
         Gets a specific department
     */
-    public String getDepartment(String companyName, String deptId) {
+    public String getDepartment(String companyName, int deptId) {
         Validator validator = new Validator();
-        validator.departmentExists(companyName, deptId);
+        Department dept = validator.departmentExists(companyName, deptId);
         
         if(validator.hasFailed()) return validator.errorMessage();
         
-        Department department = dl.getDepartment(companyName, Integer.parseInt(deptId));
-        if (department == null) {
-            return "{\"error:\": \"No department found for company " + companyName + ".\"}";
-        }
-        return gson.toJson(department);
+        return gson.toJson(dept);
     }
     
     /*
@@ -78,11 +74,11 @@ public class DepartmentModel {
         dept = gson.fromJson(department, Department.class);
       }  
       catch(com.google.gson.JsonSyntaxException mje) {
-          return "{\"error:\": \"Malformed JSON input. Bad request.\"}";
+          return "{\"error\": \"Malformed JSON input. Bad request.\"}";
       }
       
-      validator.departmentExists(dept.getCompany(), String.valueOf(dept.getId()));
-      validator.validateUniqueDeptNo(dept.getCompany(), String.valueOf(dept.getDeptNo()), dept.getId());
+      validator.departmentExists(dept.getCompany(), dept.getId());
+      validator.validateUniqueDeptNo(dept.getCompany(), dept.getDeptNo(), dept.getId());
       if(validator.hasFailed()) return validator.errorMessage();
       
       return gson.toJson(dl.updateDepartment(dept));
@@ -93,11 +89,12 @@ public class DepartmentModel {
 */
   public String deleteDepartment(String comp, int dept_id){
       Validator validator = new Validator();
-      validator.departmentExists(comp, String.valueOf(dept_id));
+      validator.departmentExists(comp, dept_id);
+
       if(validator.hasFailed()) return validator.errorMessage();
 
       dl.deleteDepartment(comp, dept_id);
-      return "{\"success:\": \"Department " + dept_id + " from " + comp +" deleted.\"}";
+      return "{\"success\": \"Department " + dept_id + " from " + comp +" deleted.\"}";
    }
 
 
